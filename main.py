@@ -2,40 +2,38 @@ from tkinter import *
 from tkinter import ttk
 import tkinter as tk
 import requests
-import time
 from bs4 import BeautifulSoup
 
 searchOptions = ['Page name', 'Category name']
 
 
 def clean(uncleanUrl):
-    nameString = "https://" + str(uncleanUrl)
-    return nameString
+    connection_not_found_error_window = "https://" + str(uncleanUrl)
+    return connection_not_found_error_window
 
 
-def ping(url):
+def ping(url, pagename):
     try:
         if "https://" in url:
-            checkExist = requests.head(str(url), timeout=1)
-            page = requests.get(str(url), timeout=1)
+            page = requests.get(str(url) + "/wiki/" + str(pagename), timeout=1)
             return page
         else:
-            newUrl = clean(url)
-            page = requests.get(str(newUrl), timeout=1)
+            new_url = clean(url)
+            page = requests.get(str(new_url + "/wiki/" + str(pagename)), timeout=1)
             return page
     except Exception as e:
-        ConnectionNotFound_errorWindow = tk.Toplevel(mainCompartment)
-        ConnectionNotFound_errorWindow.geometry('450x150')
-        ConnectionNotFound_errorWindow.title('Connection Error')
-        Label(ConnectionNotFound_errorWindow, text='Connection Error. Please double check URL and try again.').place(
+        connection_not_found_error_window = tk.Toplevel(mainCompartment)
+        connection_not_found_error_window.geometry('450x150')
+        connection_not_found_error_window.title('Connection Error')
+        Label(connection_not_found_error_window, text='Connection Error. Please double check URL and try again.').place(
             x=50, y=70)
-        Button(ConnectionNotFound_errorWindow, text="Close", command=ConnectionNotFound_errorWindow.destroy).place(
+        Button(connection_not_found_error_window, text="Close", command=connection_not_found_error_window.destroy).place(
             x=205, y=110)
         print(e)
 
 
 def search(wikiname, searchtype, pagename):
-    newpage = ping(wikiname)
+    newpage = ping(wikiname, pagename)
     newSoup = BeautifulSoup(newpage.content, 'html.parser')
 
 
