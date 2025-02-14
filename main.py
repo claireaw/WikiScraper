@@ -1,10 +1,43 @@
 from tkinter import *
 from tkinter import ttk
 import tkinter as tk
-
-import logic
+import requests
+import time
+from bs4 import BeautifulSoup
 
 searchOptions = ['Page name', 'Category name']
+
+
+def clean(uncleanUrl):
+    nameString = "https://" + str(uncleanUrl)
+    return nameString
+
+
+def ping(url):
+    try:
+        if "https://" in url:
+            checkExist = requests.head(str(url), timeout=1)
+            page = requests.get(str(url), timeout=1)
+            return page
+        else:
+            newUrl = clean(url)
+            page = requests.get(str(newUrl), timeout=1)
+            return page
+    except Exception as e:
+        ConnectionNotFound_errorWindow = tk.Toplevel(mainCompartment)
+        ConnectionNotFound_errorWindow.geometry('450x150')
+        ConnectionNotFound_errorWindow.title('Connection Error')
+        Label(ConnectionNotFound_errorWindow, text='Connection Error. Please double check URL and try again.').place(
+            x=50, y=70)
+        Button(ConnectionNotFound_errorWindow, text="Close", command=ConnectionNotFound_errorWindow.destroy).place(
+            x=205, y=110)
+        print(e)
+
+
+def search(wikiname, searchtype, pagename):
+    newpage = ping(wikiname)
+    newSoup = BeautifulSoup(newpage.content, 'html.parser')
+
 
 if __name__ == '__main__':
     # create main ui
@@ -30,7 +63,9 @@ if __name__ == '__main__':
     pageEnter = tk.Entry(mainCompartment, textvariable=pageString).place(x=136, y=60)
 
     # be sure to take input for page/category name
-    submitBtn = Button(mainCompartment, text='Run Page Scraping', command=lambda: logic.search(wikiname=urlString.get(), searchtype=entryBox.get(), pagename=pageString.get()))
+    submitBtn = Button(mainCompartment, text='Run Page Scraping',
+                       command=lambda: search(wikiname=urlString.get(), searchtype=entryBox.get(),
+                                              pagename=pageString.get()))
     submitBtn.place(x=105, y=200)
 
     # begin ui
