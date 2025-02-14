@@ -8,8 +8,8 @@ searchOptions = ['Page name', 'Category name']
 
 
 def clean(uncleanUrl):
-    connection_not_found_error_window = "https://" + str(uncleanUrl)
-    return connection_not_found_error_window
+    nameString = "https://" + str(uncleanUrl)
+    return nameString
 
 
 def ping(url, pagename):
@@ -18,16 +18,16 @@ def ping(url, pagename):
             page = requests.get(str(url) + "/wiki/" + str(pagename), timeout=1)
             return page
         else:
-            new_url = clean(url)
-            page = requests.get(str(new_url + "/wiki/" + str(pagename)), timeout=1)
+            newUrl = clean(url)
+            page = requests.get(str(newUrl + "/wiki/" + str(pagename)), timeout=1)
             return page
     except Exception as e:
-        connection_not_found_error_window = tk.Toplevel(mainCompartment)
-        connection_not_found_error_window.geometry('450x150')
-        connection_not_found_error_window.title('Connection Error')
-        Label(connection_not_found_error_window, text='Connection Error. Please double check URL and try again.').place(
+        ConnectionNotFound_errorWindow = tk.Toplevel(mainCompartment)
+        ConnectionNotFound_errorWindow.geometry('450x150')
+        ConnectionNotFound_errorWindow.title('Connection Error')
+        Label(ConnectionNotFound_errorWindow, text='Connection Error. Please double check URL and try again.').place(
             x=50, y=70)
-        Button(connection_not_found_error_window, text="Close", command=connection_not_found_error_window.destroy).place(
+        Button(ConnectionNotFound_errorWindow, text="Close", command=ConnectionNotFound_errorWindow.destroy).place(
             x=205, y=110)
         print(e)
 
